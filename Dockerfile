@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -rf /var/lib/apt/lists/*
 
 RUN apt-get update && \
-    apt-get install -y software-properties-common && \
+    apt-get install -y software-properties-common ipython ipython-notebook && \
     add-apt-repository ppa:deadsnakes/ppa
 
 RUN \
@@ -19,10 +19,10 @@ RUN \
   apt-get install -y python3.6 python3.6-dev curl
 
 RUN curl https://bootstrap.pypa.io/get-pip.py | python3.6
-RUN pip3 install tensorflow-gpu==1.10.1
+RUN pip3 install tensorflow-gpu==1.10.1 jupyter
 
 RUN mkdir -p /data
 
 WORKDIR /data
 
-CMD /bin/bash && python3.6 -c "$CODE"
+CMD /bin/bash && [ ! $CODE ] && jupyter notebook --ip=0.0.0.0 --port=8000 --allow-root --NotebookApp.token='' || python3.6 -c "$CODE"
